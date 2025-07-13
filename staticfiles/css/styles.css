@@ -1,0 +1,9 @@
+/* In your static CSS file (e.g., styles.css) */
+.hero {
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    padding-bottom: 3rem;
+    margin-top: 20px; /* Add space between navbar and hero */
+}
