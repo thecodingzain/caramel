@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Django Simple E-Commerce Website with Payment
 This is a simple e-commerce website built with Django (Python) and M-Pesa is added as payment processor.
 
@@ -119,3 +120,6 @@ Then Add Email, Username and Password
 
 
 
+=======
+# caramel
+>>>>>>> 753d2a0e5fb8cd59bbc9b1ed1270a287b390c1a6
