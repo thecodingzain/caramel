@@ -19,6 +19,7 @@ html5lib==0.999
 idna==2.6
 jmespath==0.9.3
 olefile==0.44
+packaging==25.0
 pillow==10.4.0
 psycopg2-binary==2.9.10
 PyJWT==2.9.0
@@ -34,3 +35,4 @@ typing_extensions==4.13.2
 tzdata==2025.2
 urllib3==2.4.0
 wheel==0.24.0
+whitenoise==6.9.0
