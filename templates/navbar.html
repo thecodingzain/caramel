@@ -1,0 +1,94 @@
+{% load static %}
+
+<!-- navbar-->
+      <header class="header bg-success">
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Bootstrap JS (for dropdown functionality) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <div class="container-fluid px-0">
+          <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0"><a class="navbar-brand" href="{% url 'store:home' %}"><span class="font-weight-bold text-uppercase text-dark">Caramel</span></a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <!-- Link--><a class="nav-link {% if request.resolver_match.url_name == 'store:home' %}active{% endif %}" href="{% url 'store:home' %}">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'store:category-products' or request.resolver_match.url_name == 'store:all-categories' %}active{% endif %}" 
+                     id="pagesDropdown" 
+                     href="#" 
+                     data-bs-toggle="dropdown" 
+                     aria-haspopup="true" 
+                     aria-expanded="false">
+                    Categories
+                  </a>
+                
+                  <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
+                    {% if categories_menu %}
+                      {% for cat_menu in categories_menu %}
+                        <a class="dropdown-item border-0 transition-link" href="{% url 'store:category-products' cat_menu.slug %}">{{cat_menu.title}}</a>
+                      {% endfor %}
+                    {% endif %}
+                    <hr>
+                    <a class="dropdown-item border-0 transition-link" href="{% url 'store:all-categories' %}">All Categories</a>
+                  </div>
+                </li>
+                
+                <li class="nav-item">
+                  <!-- Link--><a class="nav-link" href="{% url 'store:blog_page' %}">Blog</a>
+                </li>
+                <li class="nav-item">
+                  <!-- Link--><a class="nav-link" href="{% url 'store:contact' %}">Contact</a>
+                </li>
+              </ul>
+              <ul class="navbar-nav ml-auto">
+                {% if request.user.is_authenticated %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'store:cart' %}">
+                      <i class="fas fa-dolly-flatbed mr-1 text-gray"></i>Cart
+                      <small class="text-gray">({{ cart_items.count }})</small>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'store:wishlist' %}">
+                      <i class="far fa-heart mr-1"></i>
+                      <small class="text-gray" id="wish-list-count">({{ wish_list_count }})</small>
+                    </a>
+                  </li>
+                  
+              
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-user-alt mr-1 text-gray"></i>My Account
+                    </a>
+                    <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
+                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:profile' %}">Profile</a>
+                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:cart' %}">Cart</a>
+                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:orders' %}">Orders</a>
+                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:password-change' %}">Change Password</a>
+              
+                      <hr>
+                      <form action="{% url 'store:logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item border-0 transition-link">Log Out</button>
+                      </form>
+                    </div>
+                  </li>
+                {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'store:login' %}">Login</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'store:register' %}">Create Account</a>
+                  </li>
+                {% endif %}
+              </ul>
+              
+            </div>
+          </nav>
+        </div>
+      </header>
+

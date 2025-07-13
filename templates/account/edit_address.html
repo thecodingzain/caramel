@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="col-md-8 offset-2">
+    <h1 class="mb-5">Edit Address</h1>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <small>
+          With this account, you can save time during checkout, access your shopping bag from any device and view your order history.
+        </small>
+      </div>
+      <div class="card-body">
+        {% include 'partials/_messages.html' %}
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="row">
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+              <div class="col-lg-6 form-group">
+                <label class="text-small text-uppercase" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="text-end mt-3">
+            <button type="submit" class="btn btn-dark">Save Address</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

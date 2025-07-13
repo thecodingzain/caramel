@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="container py-5">
+    <div class="bg-light p-5 rounded shadow-sm">
+        <h1 class="display-5 fw-bold text-center mb-4">
+            <i class="bi bi-cart-check-fill text-primary"></i> Welcome to Our E-commerce Order Management System
+        </h1>
+        
+        <p class="lead">
+            In today’s fast-paced digital world, managing customer orders efficiently is key to running a successful online business.
+            At <strong>Caramel</strong>, we've built a reliable and user-friendly <strong>E-commerce Order Management System</strong>
+            to ensure your shopping experience is smooth, secure, and satisfying.
+        </p>
+
+        <h2 class="mt-5 mb-3">
+            <i class="bi bi-lightbulb-fill text-warning"></i> What Is Our Order Management System?
+        </h2>
+        <p>Our Order Management System is the engine behind your orders. When you select your favorite products and proceed to checkout, the system:</p>
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item">Collects your shipping and contact information.</li>
+            <li class="list-group-item">Organizes the products in your cart.</li>
+            <li class="list-group-item">Calculates the total price including shipping.</li>
+            <li class="list-group-item">Lets you save addresses.</li>
+            <li class="list-group-item">Tracks the order from checkout to delivery.</li>
+        </ul>
+
+        <h2 class="mt-5 mb-3">
+            <i class="bi bi-bag-fill text-success"></i> Key Features for Shoppers
+        </h2>
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item"><strong>Secure Checkout:</strong> Your data is protected and used only for delivering your order.</li>
+            <li class="list-group-item"><strong>Multiple Address Support:</strong> Easily add alternate delivery addresses.</li>
+            <li class="list-group-item"><strong>Order Tracking:</strong> View current and past order statuses.</li>
+            <li class="list-group-item"><strong>Smart Cart Management:</strong> Easily update your cart before ordering.</li>
+            <li class="list-group-item"><strong>Responsive Design:</strong> Optimized for both phone and desktop.</li>
+        </ul>
+
+        <h2 class="mt-5 mb-3">
+            <i class="bi bi-box-seam text-secondary"></i> For Our Admins: Easy Order Oversight
+        </h2>
+        <p>Admins can:</p>
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item">View and manage customer orders.</li>
+            <li class="list-group-item">Track popular products.</li>
+            <li class="list-group-item">Update order statuses.</li>
+            <li class="list-group-item">Analyze order trends.</li>
+        </ul>
+
+        <h2 class="mt-5 mb-3">
+            <i class="bi bi-rocket-takeoff-fill text-info"></i> Why It Matters
+        </h2>
+        <p>
+            Our mission is simple: to make online shopping hassle-free. With our Order Management System, you can shop with ease,
+            knowing your order is in good hands from start to finish.
+        </p>
+
+        <h2 class="mt-5 mb-3">
+            <i class="bi bi-emoji-smile-fill text-danger"></i> Get Started Today!
+        </h2>
+        <p>
+            Browse our <a href="{% url 'store:home' %}" class="link-primary">Shop</a> section,
+            add your favorite products to the cart, and place your first order with us.
+            If you have any questions or feedback, we’re just a click away via the
+            <a href="{% url 'store:contact' %}" class="link-primary">Contact</a> page.
+        </p>
+
+        <p class="text-center mt-5 fs-5">
+            <strong>Happy shopping!<br>– The Caramel Team</strong>
+        </p>
+    </div>
+</div>
+<script>
+    fetch("{% static 'js/countries.json' %}")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('File not found');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Countries:', data);
+      })
+      .catch(error => {
+        console.error('Error loading countries.json:', error);
+      });
+  </script>
+{% endblock %}

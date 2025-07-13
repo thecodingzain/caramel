@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+
+  <!-- HERO SECTION -->
+  <section class="py-5" style="background-color: #007bff; margin-top: 20px;">
+    <div class="row px-4 py-3 align-items-center">
+      <div class="col-lg-6">
+        <h1 class="h2 text-uppercase mb-0">Cart</h1>
+      </div>
+      <div class="col-lg-6 text-end">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'store:home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Cart</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  {% if cart_products %}
+  <section class="py-5">
+    <h2 class="h5 text-uppercase mb-4">Shopping Cart</h2>
+
+    {% include 'partials/_messages.html' %}
+
+    <div class="row">
+      <!-- CART ITEMS -->
+      <div class="col-lg-8 mb-4">
+        <div class="table-responsive mb-4">
+          <table class="table table-hover align-middle">
+            <thead class="bg-light">
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cart_product in cart_products %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <a href="{% url 'store:product-detail' cart_product.product.slug %}">
+                      <img src="{% if cart_product.product.product_image %}{{ cart_product.product.product_image.url }}{% else %}{% static 'img/product-detail-3.jpg' %}{% endif %}" alt="{{ cart_product.product.title }}" class="img-fluid rounded me-3" width="70">
+                    </a>
+                    <div>
+                      <a class="text-dark fw-semibold" href="{% url 'store:product-detail' cart_product.product.slug %}">
+                        {{ cart_product.product.title }}
+                      </a>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ cart_product.product.price|kes }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <a href="{% url 'store:minus-cart' cart_product.id %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-minus"></i>
+                    </a>
+                
+                    <input type="text" readonly class="form-control form-control-sm text-center mx-2" style="width: 50px;" value="{{ cart_product.quantity }}">
+                
+                    {% if cart_product.quantity < cart_product.product.stock %}
+                        <a href="{% url 'store:plus-cart' cart_product.id %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    {% else %}
+                        <button class="btn btn-outline-secondary btn-sm" disabled>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    {% endif %}
+                </div>
+                
+                </td>
+                <td>{{ cart_product.total_price|kes }}</td>
+                <td>
+                  <a href="{% url 'store:remove-cart' cart_product.id %}" class="text-danger"><i class="fas fa-trash-alt"></i></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- CART NAVIGATION -->
+        <div class="d-flex justify-content-between align-items-center bg-light p-3">
+          <a href="{% url 'store:home' %}" class="btn btn-link text-dark">
+            <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+          </a>
+          <a href="{% url 'store:checkout' %}" class="btn btn-outline-dark">
+            Proceed to Checkout<i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="col-lg-4">
+        <div class="card bg-light p-4">
+          <h5 class="text-uppercase mb-4">Your Order</h5>
+          <ul class="list-unstyled mb-4">
+            {% for item in cart_items %}
+            <li class="d-flex justify-content-between small">
+              <span>{{ item.quantity }} × {{ item.product.title }}</span>
+              <span>{{ item.product.price|kes }}</span>
+            </li>
+            {% empty %}
+            <li>No items in cart.</li>
+            {% endfor %}
+            <hr>
+            <li class="d-flex justify-content-between small fw-bold">
+              <span>Total:</span>
+              <span>{{ amount|kes }}</span>
+            </li>
+            <li class="d-flex justify-content-between small">
+              <span>Shipping:</span>
+              <span>+ {{ shipping_amount|kes }}</span>
+            </li>
+            <hr>
+            <li class="d-flex justify-content-between fw-bold text-dark">
+              <span>Grand Total:</span>
+              <span>{{ total_price|kes }}</span>
+            </li>
+          </ul>
+
+          <!-- SHIPPING ADDRESS -->
+          <h6 class="text-uppercase mb-3">Select Shipping Address</h6>
+          <form method="post" action="{% url 'store:checkout' %}">
+            {% csrf_token %}
+            {% for address in addresses %}
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="address" value="{{ address.id }}" id="address{{ forloop.counter }}">
+              <label class="form-check-label" for="address{{ forloop.counter }}">
+                <strong>Address {{ forloop.counter }}</strong><br>
+                ({{ address.locality }}, {{ address.city }}, {{ address.state }})
+              </label>
+            </div>
+            {% endfor %}
+
+            <!-- CASH ON DELIVERY BUTTON -->
+            <button type="submit" class="btn btn-dark btn-block mt-3">
+              <i class="fas fa-money-bill-alt me-2"></i>Cash on Delivery
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% else %}
+  <!-- EMPTY CART -->
+  <div class="text-center py-5">
+    <h3 class="mb-3">Your cart is empty.</h3>
+    <a href="{% url 'store:home' %}" class="btn btn-outline-dark">
+      <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock content %}

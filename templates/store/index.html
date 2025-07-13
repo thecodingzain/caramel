@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency %}
+
+{% block content %}
+<div class="container my-5">
+
+  <!-- HERO SECTION -->
+  <section class="hero pb-3 bg-cover bg-center d-flex align-items-center" 
+           style="background-image: url({% static 'img/hero_caramel_banner.jpg' %}); height: 60vh; margin-top: 20px;">
+    <div class="container py-5 text-white">
+      <div class="row px-4 px-lg-5">
+        <div class="col-lg-6 bg-dark bg-opacity-50 p-4 rounded">
+          <p class="small text-uppercase mb-2">New Inspiration {% now "Y" %}</p>
+          <h1 class="h2 text-uppercase mb-3">20% off on new season</h1>
+          <a class="btn btn-light text-dark fw-bold" href="{% url 'store:all-categories' %}">Browse collections</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES SECTION -->
+  <section class="pt-5">
+    <header class="text-center mb-4">
+      <p class="small text-muted text-uppercase mb-1">Carefully created collections</p>
+      <h2 class="h5 text-uppercase">Browse our categories</h2>
+    </header>
+    <div class="row g-4">
+      {% if categories %}
+        {% for category in categories %}
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+              <a href="{% url 'store:category-products' category.slug %}">
+                {% if category.category_image %}
+                  <img src="{{ category.category_image.url }}" class="card-img-top" alt="{{ category.title }}">
+                {% else %}
+                  <img src="{% static 'img/cat-img-1.jpg' %}" class="card-img-top" alt="{{ category.title }}">
+                {% endif %}
+              </a>
+              <div class="card-body">
+                <h5 class="card-title">{{ category.title }}</h5>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- TRENDING PRODUCTS -->
+  <section class="py-5">
+    <header class="mb-4">
+      <p class="small text-muted text-uppercase mb-1">Made the hard way</p>
+      <h2 class="h5 text-uppercase">Top trending products</h2>
+    </header>
+    <div class="row g-4">
+      {% if products %}
+        {% for product in products %}
+          <div class="col-xl-3 col-lg-4 col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+              <a href="{% url 'store:product-detail' product.slug %}">
+                {% if product.product_image %}
+                  <img src="{{ product.product_image.url }}" class="card-img-top" alt="{{ product.title }}">
+                {% else %}
+                  <img src="{% static 'img/product-1.jpg' %}" class="card-img-top" alt="{{ product.title }}">
+                {% endif %}
+              </a>
+              <div class="card-body text-center">
+                <h6 class="card-title">
+                  <a class="reset-anchor text-dark" href="{% url 'store:product-detail' product.slug %}">{{ product.title }}</a>
+                </h6>
+                <p class="card-text text-muted">{{ product.price|kes }}</p>
+                <div class="d-flex justify-content-center gap-2">
+                  <a href="#" class="btn btn-sm btn-outline-dark" id="wish-list-btn-{{ product.id }}" data-product-id="{{ product.id }}">
+                    <i class="{% if product.id in wish_list_product_ids %}fas text-danger{% else %}far{% endif %} fa-heart"></i>
+                  </a>
+                  <li class="list-inline-item m-0 p-0">
+                    {% if product.is_in_stock %}
+                      <form method="POST" action="{% url 'store:add-to-cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="prod_id" value="{{ product.id }}" id="product_id">
+                        <button type="submit" class="btn btn-sm btn-dark">Add to Cart</button>
+                      </form>
+                    {% else %}
+                      <button type="button" class="btn btn-sm btn-secondary" disabled>Out of Stock</button>
+                    {% endif %}
+                  </li>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-3 mb-lg-0">
+          <h5 class="text-uppercase">Let's stay connected!</h5>
+          <p class="text-muted mb-0">Join us on our journey and let's grow together as a community.</p>
+        </div>
+        <div class="col-lg-6">
+          <form>
+            <div class="input-group">
+              <input type="email" class="form-control form-control-lg" placeholder="Enter your email address">
+              <button class="btn btn-dark" type="submit">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Wishlist Toggle Script -->
+<script>
+  document.querySelectorAll('[id^="wish-list-btn-"]').forEach(button => {
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      const productId = this.getAttribute('data-product-id');
+      const icon = this.querySelector('i');
+
+      fetch(`/toggle_wish_list/${productId}/`, {
+        method: 'GET',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.action === 'added') {
+          icon.classList.remove('far');
+          icon.classList.add('fas', 'text-danger');
+        } else if (data.action === 'removed') {
+          icon.classList.remove('fas', 'text-danger');
+          icon.classList.add('far');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+  });
+</script>
+
+<!-- Sample fetch script (countries.json) -->
+<script>
+  fetch("{% static 'js/countries.json' %}")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('File not found');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Countries:', data);
+    })
+    .catch(error => {
+      console.error('Error loading countries.json:', error);
+    });
+</script>
+
+{% endblock content %}
+
+{% include 'footer.html' %}
+{% include 'scripts.html' %}

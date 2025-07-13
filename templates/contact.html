@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-8 text-center">
+        <h2 class="display-5 fw-bold">Contact Us</h2>
+        <p class="text-muted">Reach out with questions, suggestions, or feedback.</p>
+
+        {% if messages %}
+          {% for message in messages %}
+            {% if message.tags == "success" %}
+              <div class="alert alert-success mt-4" role="alert">
+                {{ message }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <!-- Contact Info -->
+      <div class="col-md-5 mb-4">
+        <div class="bg-white rounded shadow-sm p-4 h-100">
+          <h4 class="fw-semibold mb-3">Our Support</h4>
+          <p class="mb-2"><strong>Phone:</strong> +254 708 708 481</p>
+          <p class="mb-2"><strong>Email:</strong> reginaldateya@gmail.com</p>
+          <p class="mb-0"><strong>Location:</strong> Nairobi, Kenya</p>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="col-md-7">
+        <div class="bg-white rounded shadow-sm p-4">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="name" class="form-label">Your Name</label>
+              <input type="text" name="name" class="form-control" id="name" placeholder="John Doe" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Your Email</label>
+              <input type="email" name="email" class="form-control" id="email" placeholder="john@example.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="subject" class="form-label">Subject (Optional)</label>
+              <input type="text" name="subject" class="form-control" id="subject" placeholder="e.g. Product Inquiry">
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Message</label>
+              <textarea name="message" class="form-control" id="message" rows="5" placeholder="Type your message here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success w-100">
+              Send Message ✈
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Optional Script -->
+<script>
+  fetch("{% static 'js/countries.json' %}")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('File not found');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Countries:', data);
+    })
+    .catch(error => {
+      console.error('Error loading countries.json:', error);
+    });
+</script>
+{% endblock %}
